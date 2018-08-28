@@ -3,6 +3,19 @@ objects: Table object -> to be notiefied objects
 readOnly: Set with all objects that are really read only
 
 What is missing: treat already read only objects correctly (and changing monitored to read-Only)
+
+Problems:
+
+-> Even with Exception sperclass, if someone does on: Exception: do:, we have a problem
+
+-> printString: change of inner objects might make printString of outer object different, no way to detect.
+
+-> rate of change: change in a loop will lead to many notifications. 
+	=> ChangeDetector could be enhanced to catch that.
+
+-> need to solve concurrency. Monitor in ChangeDetector
+
+-> could expose concurrency bugs as it turns one atomic bytecode operation into a huge exception mechanism.
 "
 Class {
 	#name : #ChangeDetector,
