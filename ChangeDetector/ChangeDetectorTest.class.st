@@ -2,6 +2,9 @@
 Test for ChangeDetector.
 
 This needs a fix in TestResult>>#runCase: to exclude ModificationForbidden (which is a subclass of error).
+
+the on: part needs to read: 
+on: self class failure , self class skip, self class warning, self class error - ModificationForbidden 
 "
 Class {
 	#name : #ChangeDetectorTest,
