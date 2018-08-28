@@ -7,5 +7,5 @@ ModificationForbidden >> defaultAction [
 			[ChangeDetector notifyChangeOf: object.
 			object beWritableObject.
 			self retryModification] ensure: [ object beReadOnlyObject ]]
-		ifFalse: [^super defaultAction]. 	
+		ifFalse: [UnhandledError signalForException: self]. 	
 ]

@@ -1,10 +1,12 @@
 "
 Test for ChangeDetector.
 
-This needs a fix in TestResult>>#runCase: to exclude ModificationForbidden (which is a subclass of error).
+This needs a fix to be green (purely for running the tests): ModificationForbidden should not be a Error subclass:
 
-the on: part needs to read: 
-on: self class failure , self class skip, self class warning, self class error - ModificationForbidden 
+Exception subclass: #ModificationForbidden
+	instanceVariableNames: 'object fieldIndex newValue retrySelector'
+	classVariableNames: ''
+	package: 'Kernel-Exceptions'
 "
 Class {
 	#name : #ChangeDetectorTest,
