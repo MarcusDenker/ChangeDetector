@@ -46,6 +46,11 @@ ChangeDetector class >> notifyChangeOf: anObject [
 	self uniqueInstance notifyChangeOf: anObject.
 ]
 
+{ #category : #api }
+ChangeDetector class >> notifyChangeOf: anObject with: aModification [
+	self uniqueInstance notifyChangeOf: anObject with: aModification
+]
+
 { #category : #'instance creation' }
 ChangeDetector class >> reset [
 	uniqueInstance := nil
@@ -91,6 +96,11 @@ ChangeDetector >> notify: notifiedObject OnChangeIn: observedObject [
 { #category : #api }
 ChangeDetector >> notifyChangeOf: anObject [
 	(objects at: anObject) do: [ :each | each objectChangeNotified ]
+]
+
+{ #category : #api }
+ChangeDetector >> notifyChangeOf: anObject with: modification [
+	(objects at: anObject) do: [ :each | each objectChangeNotifiedBy: modification ]
 ]
 
 { #category : #api }

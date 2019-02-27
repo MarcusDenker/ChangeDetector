@@ -23,6 +23,11 @@ ChangeDetectorTest >> objectChangeNotified [
 ]
 
 { #category : #running }
+ChangeDetectorTest >> objectChangeNotifiedBy: modification [
+	flag := modification
+]
+
+{ #category : #running }
 ChangeDetectorTest >> tearDown [
 	flag := nil.
 ]
@@ -56,11 +61,26 @@ ChangeDetectorTest >> testObserveObjectWithModification [
 	observed at: 1 put: $T.
 
 	self assert: observed equals: 'Test2'.
-	"and the method #objectChangeNotified was called, setting flag"
-	self assert: flag equals: #yes.
-	
+		
 	observed stopNotifyOnChange: observer.
 	self deny: (observed isReadOnlyObject).
 
+	
+]
+
+{ #category : #tests }
+ChangeDetectorTest >> testObserveObjectWithModificationReification [
+	| observed observer |
+	observed := 'test2'.
+	observer := self.
+	observed notifyOnChange: observer.
+	observed at: 1 put: $T.
+	
+	self assert: flag notNil.
+	self assert: flag fieldIndex equals: 1.
+	self assert: flag newValue equals: $T.
+	self assert: flag retrySelector equals: #at:put:.
+	self assert: flag object == observed.
+	
 	
 ]
