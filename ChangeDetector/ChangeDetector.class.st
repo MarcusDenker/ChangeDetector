@@ -106,17 +106,21 @@ ChangeDetector >> notifyChangeOf: anObject with: modification [
 { #category : #api }
 ChangeDetector >> stopNotify: notifiedObject OnChangeIn: observedObject [
 	| observers |
-	(self isDetectingFor: observedObject) ifFalse: [ ^self ].
+	(self isDetectingFor: observedObject)
+		ifFalse: [ ^ self ].
 	observers := objects at: observedObject.
 	observers remove: notifiedObject.
-	observers ifEmpty: [objects removeKey: observedObject].
-	
-	"if in readOnly, we keep readOnly status"
-	(readOnly identityIncludes: observedObject) ifFalse: [  
-		observedObject beWritableObject.
-	].
-	"clean readOnly list"
-	observers ifEmpty: [readOnly remove: observedObject ifAbsent: []].
-	objects ifEmpty: [ self class reset ].
+	observers ifEmpty: [ objects removeKey: observedObject ].
 
+	"If no more observers for that object, we remove it fro mthe RO list"
+	objects
+		at: observedObject
+		ifAbsent: [ readOnly remove: observedObject ifAbsent: [ "no impact" ] ].
+
+	"If in readOnly, we keep readOnly status"
+	(readOnly identityIncludes: observedObject)
+		ifFalse: [ observedObject beWritableObject ].
+	"Clean readOnly list"
+	observers ifEmpty: [ readOnly remove: observedObject ifAbsent: [  ] ].
+	objects ifEmpty: [ self class reset ]
 ]
