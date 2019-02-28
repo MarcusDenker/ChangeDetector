@@ -6,6 +6,10 @@ Object >> notifyOnChange: anObject [
 ]
 
 { #category : #'*ChangeDetector' }
+Object >> objectChangeNotifiedBy: aModification [
+]
+
+{ #category : #'*ChangeDetector' }
 Object >> stopNotifyOnChange: anObject [
 	ChangeDetector stopNotify: anObject OnChangeIn: self
 ]

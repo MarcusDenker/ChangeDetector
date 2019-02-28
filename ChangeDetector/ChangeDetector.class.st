@@ -46,6 +46,11 @@ ChangeDetector class >> notifyChangeOf: anObject [
 	self uniqueInstance notifyChangeOf: anObject.
 ]
 
+{ #category : #api }
+ChangeDetector class >> notifyChangeOf: anObject with: aModification [
+	self uniqueInstance notifyChangeOf: anObject with: aModification
+]
+
 { #category : #'instance creation' }
 ChangeDetector class >> reset [
 	uniqueInstance := nil
@@ -94,19 +99,28 @@ ChangeDetector >> notifyChangeOf: anObject [
 ]
 
 { #category : #api }
+ChangeDetector >> notifyChangeOf: anObject with: modification [
+	(objects at: anObject) do: [ :each | each objectChangeNotifiedBy: modification ]
+]
+
+{ #category : #api }
 ChangeDetector >> stopNotify: notifiedObject OnChangeIn: observedObject [
 	| observers |
-	(self isDetectingFor: observedObject) ifFalse: [ ^self ].
+	(self isDetectingFor: observedObject)
+		ifFalse: [ ^ self ].
 	observers := objects at: observedObject.
 	observers remove: notifiedObject.
-	observers ifEmpty: [objects removeKey: observedObject].
-	
-	"if in readOnly, we keep readOnly status"
-	(readOnly identityIncludes: observedObject) ifFalse: [  
-		observedObject beWritableObject.
-	].
-	"clean readOnly list"
-	observers ifEmpty: [readOnly remove: observedObject ifAbsent: []].
-	objects ifEmpty: [ self class reset ].
+	observers ifEmpty: [ objects removeKey: observedObject ].
 
+	"If no more observers for that object, we remove it fro mthe RO list"
+	objects
+		at: observedObject
+		ifAbsent: [ readOnly remove: observedObject ifAbsent: [ "no impact" ] ].
+
+	"If in readOnly, we keep readOnly status"
+	(readOnly identityIncludes: observedObject)
+		ifFalse: [ observedObject beWritableObject ].
+	"Clean readOnly list"
+	observers ifEmpty: [ readOnly remove: observedObject ifAbsent: [  ] ].
+	objects ifEmpty: [ self class reset ]
 ]
